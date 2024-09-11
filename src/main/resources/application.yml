@@ -1,15 +1,33 @@
 server:
-  port: 8443
-  ssl:
-    key-store: classpath:keystore.p12
-    key-store-password: netcool
-    key-store-type: PKCS12
-    key-alias: mylocalcert
+  port: 8080
+#  ssl:
+#    key-store: classpath:keystore.p12
+#    key-store-password: netcool
+#    key-store-type: PKCS12
+#    key-alias: mylocalcert
+
+rabbitmq:
+  exchange:
+    name: exchangeName1
+  queue:
+    name: queueName1
+    json:
+      name: jsonQueueName
+  routing:
+    key: routingKey1
+    json:
+      key: jsonRoutingKey
 
 spring:
   main:
     allow-bean-definition-overriding: true
     web-application-type: reactive
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
   application:
     name: gateway-service
@@ -18,10 +36,10 @@ spring:
     gateway:
       routes:
         - id: forms-service
-          uri: http://localhost:8081
+          uri: http://forms-service:8081  # use the service name defined in Docker Compose
           predicates:
             - Path=/forms/**
-        - id: emails-service
-          uri: http://localhost:8082
+        - id: email-service
+          uri: http://email-service:8082  # use the correct Docker service name
           predicates:
             - Path=/emails/**

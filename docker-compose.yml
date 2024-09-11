@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672" # RabbitMQ management interface
+      - "5672:5672"   # RabbitMQ messaging port
+    networks:
+      - app-network
+
+  api-gateway:
+    build:
+      context: C:/Users/veselinb/Desktop/test/gateway-service/gateway-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      - app-network
+    depends_on:
+      - email-service
+
+  email-service:
+    build:
+      context: C:/Users/veselinb/Desktop/test/email-service/email-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    restart: always
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
